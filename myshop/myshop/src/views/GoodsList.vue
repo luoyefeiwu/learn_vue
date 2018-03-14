@@ -24,10 +24,10 @@
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd>
-                <a href="javascript:void(0)">All</a>
+                <a href="javascript:void(0)" @click="setPriceFilter('all')">All</a>
               </dd>
-              <dd v-for="item in priceFilter">
-                <a href="javascript:void(0)">{{item.startPrice}} - {{item.endPrice}}</a>
+              <dd v-for="(item,index) in priceFilter">
+                <a href="javascript:void(0)" @click="setPriceFilter(index)">{{item.startPrice}} - {{item.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -89,7 +89,8 @@ export default {
       sortFlag: true,
       page: 1,
       pageSize: 8,
-      priceChecked: true
+      priceChecked: true,
+      priceLevel: "all"
     };
   },
   components: {
@@ -106,9 +107,8 @@ export default {
         page: this.page,
         pageSize: this.pageSize,
         sort: this.sortFlag ? 1 : -1,
-        priceLevel: this.priceChecked
+        priceLevel: this.priceLevel
       };
-      console.log(param);
       axios
         .get("http://localhost:3000/goods/list", { params: param })
         .then(result => {
@@ -116,7 +116,7 @@ export default {
         });
     },
     setPriceFilter(index) {
-      this.priceChecked = index;
+      this.priceLevel = index;
       this.page = 1;
       this.getGoodsList();
     }
