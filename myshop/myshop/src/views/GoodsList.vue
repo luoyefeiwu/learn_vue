@@ -19,75 +19,30 @@
           <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
         </div>
         <div class="accessory-result">
-          <!-- filter -->
+          <!-- 价格筛选 -->
           <div class="filter stopPop" id="filter">
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd>
                 <a href="javascript:void(0)">All</a>
               </dd>
-              <dd>
-                <a href="javascript:void(0)">0 - 100</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">100 - 500</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">500 - 1000</a>
-              </dd>
-              <dd>
-                <a href="javascript:void(0)">1000 - 2000</a>
+              <dd v-for="item in priceFilter">
+                <a href="javascript:void(0)">{{item.startPrice}} - {{item.endPrice}}</a>
               </dd>
             </dl>
           </div>
 
-          <!-- search result accessories list -->
+          <!-- 商品列表 -->
           <div class="accessory-list-wrap">
             <div class="accessory-list col-4">
               <ul>
-                <li>
+                <li v-for="(item,index) in goodsList">
                   <div class="pic">
-                    <a href="#"><img src="static/1.jpg" alt=""></a>
+                    <a href="#"><img v-bind:src="'static/'+item.productImage" alt=""></a>
                   </div>
                   <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">999</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#"><img src="static/2.jpg" alt=""></a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">1000</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#"><img src="static/3.jpg" alt=""></a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">500</div>
-                    <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="pic">
-                    <a href="#"><img src="static/4.jpg" alt=""></a>
-                  </div>
-                  <div class="main">
-                    <div class="name">XX</div>
-                    <div class="price">2499</div>
+                    <div class="name">{{item.productName}}</div>
+                    <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
                       <a href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
@@ -112,7 +67,29 @@ import axios from "axios";
 export default {
   data() {
     return {
-      msg: "hello vue"
+      goodsList: [],
+      priceFilter: [
+        {
+          startPrice: "0.00",
+          endPrice: "100.00"
+        },
+        {
+          startPrice: "100.00",
+          endPrice: "500.00"
+        },
+        {
+          startPrice: "500.00",
+          endPrice: "1000.00"
+        },
+        {
+          startPrice: "1000.00",
+          endPrice: "5000.00"
+        }
+      ],
+      sortFlag: true,
+      page: 1,
+      pageSize: 8,
+      priceChecked: true
     };
   },
   components: {
@@ -120,10 +97,28 @@ export default {
     NavFooter,
     NavBread
   },
-  mounted: function() {},
+  mounted: function() {
+    this.getGoodsList();
+  },
   methods: {
     getGoodsList() {
-      axios.getGoodsList();
+      var param = {
+        page: this.page,
+        pageSize: this.pageSize,
+        sort: this.sortFlag ? 1 : -1,
+        priceLevel: this.priceChecked
+      };
+      console.log(param);
+      axios
+        .get("http://localhost:3000/goods/list", { params: param })
+        .then(result => {
+          this.goodsList = result.data.result.list;
+        });
+    },
+    setPriceFilter(index) {
+      this.priceChecked = index;
+      this.page = 1;
+      this.getGoodsList();
     }
   }
 };
