@@ -11,16 +11,16 @@
         <div class="filter-nav">
           <span class="sortby">Sort by:</span>
           <a href="javascript:void(0)" class="default cur">Default</a>
-          <a href="javascript:void(0)" class="price">Price
+          <a href="javascript:void(0)" class="price" v-bind:class="{'sort-up':sortFlag}" @click="sortGoods()">Price
             <svg class="icon icon-arrow-short">
               <use xlink:href="#icon-arrow-short"></use>
             </svg>
           </a>
-          <a href="javascript:void(0)" class="filterby stopPop">Filter by</a>
+            <a href="javascript:void(0)" class="filterby stopPop" @click.stop="showFilterPop">Filter by</a>
         </div>
         <div class="accessory-result">
           <!-- 价格筛选 -->
-          <div class="filter stopPop" id="filter">
+            <div class="filter stopPop" id="filter" v-bind:class="{'filterby-show':filterBy}">
             <dl class="filter-price">
               <dt>Price:</dt>
               <dd>
@@ -44,7 +44,7 @@
                     <div class="name">{{item.productName}}</div>
                     <div class="price">{{item.salePrice}}</div>
                     <div class="btn-area">
-                      <a href="javascript:;" class="btn btn--m">加入购物车</a>
+                      <a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
                     </div>
                   </div>
                 </li>
@@ -90,7 +90,9 @@ export default {
       page: 1,
       pageSize: 8,
       priceChecked: true,
-      priceLevel: "all"
+      priceLevel: "all",
+      filterBy: false,
+      overLayFlag: false
     };
   },
   components: {
@@ -115,10 +117,29 @@ export default {
           this.goodsList = result.data.result.list;
         });
     },
+    sortGoods() {
+      this.sortFlag = !this.sortFlag;
+      this.page = 1;
+      this.getGoodsList();
+    },
     setPriceFilter(index) {
       this.priceLevel = index;
       this.page = 1;
       this.getGoodsList();
+    },
+    showFilterPop() {
+      this.filterBy = true;
+      this.overLayFlag = true;
+    },
+    addCart(productId) {
+      axios
+        .post("http://localhost:3000/goods/addCart", {
+          productId: productId
+        })
+        .then(result => {
+          debugger;
+          alert('哈哈');
+        });
     }
   }
 };
