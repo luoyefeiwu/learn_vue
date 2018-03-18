@@ -137,8 +137,11 @@ export default {
           productId: productId
         })
         .then(result => {
-          debugger;
-          alert('哈哈');
+          if(result.data.status=='0'){
+            alert('加入成功');
+          }else{
+            alert('msg:'+result.msg);
+          }
         });
     }
   }
