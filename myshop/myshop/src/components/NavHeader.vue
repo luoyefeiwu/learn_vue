@@ -151,6 +151,7 @@ export default {
         this.errorTip = true;
         return;
       }
+      axios.defaults.withCredentials = true;
       axios
         .post("http://localhost:3000/users/login", {
           userName: this.userName,
