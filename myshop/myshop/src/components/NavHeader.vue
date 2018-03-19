@@ -145,6 +145,9 @@ export default {
       nickName: ""
     };
   },
+  mounted() {
+    this.checkLogin();
+  },
   methods: {
     login() {
       if (!this.userName || !this.userPwd) {
@@ -174,6 +177,15 @@ export default {
         let res = result.data;
         if (res.status == "0") {
           this.nickName = "";
+        }
+      });
+    },
+    checkLogin() {
+      axios.defaults.withCredentials = true;
+      axios.get("http://localhost:3000/users/checkLogin").then(result => {
+        var res = result.data;
+        if (res.status == "0") {
+          this.nickName = res.result;
         }
       });
     }

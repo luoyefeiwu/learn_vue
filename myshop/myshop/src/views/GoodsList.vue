@@ -54,6 +54,10 @@
         </div>
       </div>
     </div>
+    <modal v-bind="mdShow">
+      <p slot="message">请先登陆，否则无法加入购物车中！</p>
+      <div slot="btnGroup"><a class="btn btn--m">关闭</a></div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -64,6 +68,7 @@ import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
 import axios from "axios";
+import Modal from "@/components/Modal";
 export default {
   data() {
     return {
@@ -89,6 +94,7 @@ export default {
       sortFlag: true,
       page: 1,
       pageSize: 8,
+      mdShow:false,
       priceChecked: true,
       priceLevel: "all",
       filterBy: false,
@@ -98,7 +104,8 @@ export default {
   components: {
     NavHeader,
     NavFooter,
-    NavBread
+    NavBread,
+    Modal
   },
   mounted: function() {
     this.getGoodsList();
@@ -137,10 +144,10 @@ export default {
           productId: productId
         })
         .then(result => {
-          if(result.data.status=='0'){
-            alert('加入成功');
-          }else{
-            alert('msg:'+result.msg);
+          if (result.data.status == "0") {
+            alert("加入成功");
+          } else {
+            this.mdShow=true;
           }
         });
     }
