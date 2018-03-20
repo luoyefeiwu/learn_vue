@@ -20,10 +20,16 @@
 </template>
 <script>
 export default {
+  props: ["mdShow"],
   data() {
     return {
       msg: "hello vue"
     };
+  },
+  methods: {
+    closeModal() {
+      this.$emit("close");
+    }
   }
 };
 </script>

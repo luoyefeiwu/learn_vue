@@ -54,10 +54,23 @@
         </div>
       </div>
     </div>
-    <modal v-bind="mdShow">
+    <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
       <p slot="message">请先登陆，否则无法加入购物车中！</p>
-      <div slot="btnGroup"><a class="btn btn--m">关闭</a></div>
+      <div slot="btnGroup"><a class="btn btn--m" @click="mdShow = false">关闭</a></div>
     </modal>
+    <modal v-bind="mdShow" v-on="closeModal">
+      <p slot="message">
+          <svg class="icon-status-ok">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+          </svg>
+          <span>加入购物车成功!</span>
+      </p>
+      <div slot="btnGrop">
+         <a class="btn btn--m" href="javascript:;" @click="mdShowCart = false">继续购物</a>
+          <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
+
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -94,7 +107,8 @@ export default {
       sortFlag: true,
       page: 1,
       pageSize: 8,
-      mdShow:false,
+      mdShow: false,
+      mdShowCart: false,
       priceChecked: true,
       priceLevel: "all",
       filterBy: false,
@@ -139,6 +153,7 @@ export default {
       this.overLayFlag = true;
     },
     addCart(productId) {
+      axios.defaults.withCredentials = true;
       axios
         .post("http://localhost:3000/goods/addCart", {
           productId: productId
@@ -147,9 +162,13 @@ export default {
           if (result.data.status == "0") {
             alert("加入成功");
           } else {
-            this.mdShow=true;
+            this.mdShow = true;
           }
         });
+    },
+    closeModal() {
+      this.mdShow = false;
+      this.mdShowCart = false;
     }
   }
 };
