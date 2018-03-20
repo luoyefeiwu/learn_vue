@@ -58,7 +58,7 @@
       <p slot="message">请先登陆，否则无法加入购物车中！</p>
       <div slot="btnGroup"><a class="btn btn--m" @click="mdShow = false">关闭</a></div>
     </modal>
-    <modal v-bind="mdShow" v-on="closeModal">
+    <modal v-bind:mdShow="mdShowCart" v-on:close="closeModal">
       <p slot="message">
           <svg class="icon-status-ok">
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
@@ -80,8 +80,8 @@ import "@/assets/css/product.css";
 import NavHeader from "@/components/NavHeader";
 import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
-import axios from "axios";
 import Modal from "@/components/Modal";
+import axios from "axios";
 export default {
   data() {
     return {
@@ -160,7 +160,7 @@ export default {
         })
         .then(result => {
           if (result.data.status == "0") {
-            alert("加入成功");
+            this.mdShowCart = true;
           } else {
             this.mdShow = true;
           }
