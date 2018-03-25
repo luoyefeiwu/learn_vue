@@ -61,14 +61,14 @@
                                         </a>
                                     </div>
                                     <div class="cart-item-pic">
-                                        <img v-bind:src="'/static/'+item.productImage"  >
+                                        <img v-bind:src="'/static/'+item.productImage">
                                     </div>
                                     <div class="cart-item-title">
                                         <div class="item-name">{{item.productName}}</div>
                                     </div>
                                 </div>
                                 <div class="cart-tab-2">
-                                    <div class="item-price">{{item.salePrice}}</div>
+                                    <div class="item-price">{{item.salePrice|currency('$')}}</div>
                                 </div>
                                 <div class="cart-tab-3">
                                     <div class="item-quantity">
@@ -82,7 +82,7 @@
                                     </div>
                                 </div>
                                 <div class="cart-tab-4">
-                                    <div class="item-price-total">{{item.salePrice*item.productNum}}</div>
+                                    <div class="item-price-total">{{(item.salePrice*item.productNum)|currency('$')}}</div>
                                 </div>
                                 <div class="cart-tab-5">
                                     <div class="cart-item-opration">
@@ -101,8 +101,8 @@
                     <div class="cart-foot-inner">
                         <div class="cart-foot-l">
                             <div class="item-all-check">
-                                <a href="javascipt:;"  @click="toggleCheckAll" >
-                                    <span class="checkbox-btn item-check-btn" v-bind:class="{'check':checkAllFlag}">
+                                <a href="javascipt:;" @click="toggleCheckAll">
+                                    <span class="checkbox-btn item-check-btn" v-bind:class="{'checked':checkAllFlag}">
                                         <svg class="icon icon-ok">
                                             <use xlink:href="#icon-ok" />
                                         </svg>
@@ -114,7 +114,7 @@
                         <div class="cart-foot-r">
                             <div class="item-total">
                                 Item total:
-                                <span class="total-price">500</span>
+                                <span class="total-price">{{totalPrice | currency('$')}}</span>
                             </div>
                             <div class="btn-wrap">
                                 <a class="btn btn--red">Checkout</a>
@@ -124,6 +124,14 @@
                 </div>
             </div>
         </div>
+
+        <Modal :mdShow="modalConfirm" @close="closeModal">
+            <p slot="message">你确定要删除此条数据吗？</p>
+            <div slot="btnGroup">
+                <a class="btn btn--m" href="javascript:;" @click="delCart">确认</a>
+                <a class="btn btn--m btn--red" href="javascript:;" @click="modalConfirm = false">关闭</a>
+            </div>
+        </modal>
         <nav-footer></nav-footer>
     </div>
 </template>
@@ -161,10 +169,14 @@ import NavFooter from "@/components/NavFooter";
 import NavBread from "@/components/NavBread";
 import Modal from "@/components/Modal";
 import axios from "axios";
+
 export default {
   data() {
     return {
-      cartList: []
+      cartList: [],
+      delItem: {},
+      modalConfirm: false
+      // checkAllFlag: false
     };
   },
   components: {
@@ -173,7 +185,17 @@ export default {
     NavBread,
     Modal
   },
-  comouted: {
+  computed: {
+    checkAllFlag() {
+      return this.checkedCount == this.cartList.length;
+    },
+    checkedCount() {
+      var i = 0;
+      this.cartList.forEach(item => {
+        if (item.checked == "1") i++;
+      });
+      return i;
+    },
     totalPrice() {
       var money = 0;
       this.cartList.forEach(item => {
@@ -195,6 +217,13 @@ export default {
         if (result.data.status == "0") this.cartList = result.data.result;
       });
     },
+    closeModal() {
+      this.modalConfirm = false;
+    },
+    delCartConfirm(item) {
+      this.delItem = item;
+      this.modalConfirm = true;
+    },
     //编辑
     editCart(flag, item) {
       if (flag == "add") {
@@ -208,22 +237,50 @@ export default {
       } else {
         item.checked = item.checked == "1" ? "0" : "1";
       }
-      //   axios.defaults.withCredentials = true;
-      //   axios
-      //     .post("http://localhost:3000/users/cartEdit", {
-      //       productId: item.productId,
-      //       productNum: item.productNum,
-      //       checked: item.checked
-      //     })
-      //     .then(result => {});
+      axios.defaults.withCredentials = true;
+      axios
+        .post("http://localhost:3000/users/cartEdit", {
+          productId: item.productId,
+          productNum: item.productNum,
+          checked: item.checked
+        })
+        .then(result => {
+          let data = result.data;
+        });
     },
     toggleCheckAll() {
+      var flag = !this.checkAllFlag;
       this.cartList.forEach(item => {
         item.checked = flag ? "1" : "0";
       });
+      axios
+        .post("http://localhost:3000/users/editCheckAll", {
+          checkAll: flag
+        })
+        .then(response => {
+          let res = response.data;
+          if (res.status == "0") {
+            console.log("update suc");
+          }
+        });
     },
     delCartConfirm(item) {
-      alert("点击删除了");
+      this.delItem = item;
+      this.modalConfirm = true;
+    },
+    delCart() {
+      axios.defaults.withCredentials = true;
+      axios
+        .post("http://localhost:3000/users/delCart", {
+          productId: this.delItem.productId
+        })
+        .then(result => {
+          let res = result.data;
+          if (res.status == "0") {
+            this.modalConfirm = false;
+            this.init();
+          }
+        });
     }
   }
 };

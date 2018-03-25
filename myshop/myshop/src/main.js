@@ -8,9 +8,10 @@ import './assets/css/base.css'
 import './assets/css/checkout.css'
 import './assets/css/login.css'
 import './assets/css/product.css'
+import { currency } from "./util/currency";
 
 Vue.config.productionTip = false
-
+Vue.filter('currency',currency);
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
