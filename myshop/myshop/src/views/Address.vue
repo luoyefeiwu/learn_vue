@@ -68,21 +68,21 @@
                     <div class="addr-list-wrap">
                         <div class="addr-list">
                             <ul>
-                                <li v-for="(item,index) in addressListFilter" v-bind:class="{'check':checkIndex==index}" @click="checkIndex=index">
+                                <li v-for="(item,index) in addressListFilter" v-bind:class="{'check':checkIndex==index}" @click="checkIndex=index;selectedAddrId=item.addressId">
                                     <dl>
                                         <dt>{{item.userName}}</dt>
                                         <dd class="address">{{item.streetName}}</dd>
                                         <dd class="tel">{{item.tel}}</dd>
                                     </dl>
                                     <div class="addr-opration addr-del">
-                                        <a href="javascript:;" class="addr-del-btn">
+                                        <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                                             <svg class="icon icon-del">
                                                 <use xlink:href="#icon-del"></use>
                                             </svg>
                                         </a>
                                     </div>
                                     <div class="addr-opration addr-set-default" v-if="!item.isDefault">
-                                        <a href="javascript:;" class="addr-set-default-btn">
+                                        <a href="javascript:;" class="addr-set-default-btn" @click="setDefault(item.addressId)">
                                             <i>Set default</i>
                                         </a>
                                     </div>
@@ -135,11 +135,20 @@
                         </div>
                     </div>
                     <div class="next-btn-wrap">
-                        <a class="btn btn--m btn--red">Next</a>
+                        <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm',query:{ 'addressId':selectedAddrId}}">Next</router-link>
                     </div>
                 </div>
             </div>
         </div>
+        <modal v-bind:mdShow="isMdshow" @close="closeModal">
+            <p slot="message">
+                您是否确认要删除此地址?
+            </p>
+            <div slot="btnGroup">
+                <a class="btn btn--m" href="javascript:;" @click="delAddress">确认</a>
+                <a class="btn btn--m btn--red" href="javascript:;" @click="isMdshow=false">取消</a>
+            </div>
+        </modal>
         <nav-footer></nav-footer>
     </div>
 </template>
@@ -156,7 +165,10 @@ export default {
     return {
       checkIndex: 0,
       limit: 3,
-      addressList: []
+      selectedAddrId: "",
+      addressList: [],
+      isMdshow: false,
+      addressId: ""
     };
   },
   components: {
@@ -186,6 +198,35 @@ export default {
       } else {
         this.limit = 3;
       }
+    },
+    setDefault(addressId) {
+      axios
+        .post("http://localhost:3000/users/setDefault", {
+          addressId: addressId
+        })
+        .then(result => {
+          if (result.data.status == "0") this.init();
+        });
+    },
+    closeModal() {
+      this.isMdshow = false;
+    },
+    delAddressConfirm(addressId) {
+      this.addressId = addressId;
+      this.isMdshow = true;
+    },
+    delAddress() {
+      this.isMdshow = false;
+      axios
+        .post("httP://localhost:3000/users/delAddress", {
+          addressId: this.addressId
+        })
+        .then(result => {
+          let res = result.data;
+          if (res.status == "0") {
+            this.init();
+          }
+        });
     }
   }
 };
