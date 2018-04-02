@@ -156,7 +156,7 @@ export default {
       }
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:3000/users/login", {
+        .post("users/login", {
           userName: this.userName,
           userPwd: this.userPwd
         })
@@ -173,7 +173,7 @@ export default {
     },
     logout() {
       axios.defaults.withCredentials = true;
-      axios.post("http://localhost:3000/users/logout").then(result => {
+      axios.post("users/logout").then(result => {
         let res = result.data;
         if (res.status == "0") {
           this.nickName = "";
@@ -182,7 +182,7 @@ export default {
     },
     checkLogin() {
       axios.defaults.withCredentials = true;
-      axios.get("http://localhost:3000/users/checkLogin").then(result => {
+      axios.get("users/checkLogin").then(result => {
         var res = result.data;
         if (res.status == "0") {
           this.nickName = res.result;

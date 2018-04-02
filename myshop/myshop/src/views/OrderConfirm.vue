@@ -168,7 +168,7 @@ export default {
   methods: {
     init() {
       axios.defaults.withCredentials = true;
-      axios.get("http://localhost:3000/users/cartList").then(result => {
+      axios.get("users/cartList").then(result => {
         let data = result.data;
         this.cartList = data.result;
         this.cartList.forEach(item => {
@@ -183,7 +183,7 @@ export default {
     payMent() {
       var addressId = this.$route.query.addressId;
       axios
-        .post("http://localhost:3000/users/payMent", {
+        .post("users/payMent", {
           addressId: addressId,
           orderTotal: this.orderTotal
         })

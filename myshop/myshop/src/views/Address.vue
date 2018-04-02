@@ -187,7 +187,7 @@ export default {
   },
   methods: {
     init() {
-      axios.get("http://localhost:3000/users/addressList").then(result => {
+      axios.get("users/addressList").then(result => {
         let res = result.data.result;
         this.addressList = res;
       });
@@ -201,7 +201,7 @@ export default {
     },
     setDefault(addressId) {
       axios
-        .post("http://localhost:3000/users/setDefault", {
+        .post("users/setDefault", {
           addressId: addressId
         })
         .then(result => {
@@ -218,7 +218,7 @@ export default {
     delAddress() {
       this.isMdshow = false;
       axios
-        .post("httP://localhost:3000/users/delAddress", {
+        .post("users/delAddress", {
           addressId: this.addressId
         })
         .then(result => {

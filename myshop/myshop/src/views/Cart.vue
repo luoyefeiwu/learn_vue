@@ -213,7 +213,7 @@ export default {
     //初始化
     init() {
       axios.defaults.withCredentials = true;
-      axios.get("http://localhost:3000/users/cartList").then(result => {
+      axios.get("users/cartList").then(result => {
         if (result.data.status == "0") this.cartList = result.data.result;
       });
     },
@@ -239,7 +239,7 @@ export default {
       }
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:3000/users/cartEdit", {
+        .post("users/cartEdit", {
           productId: item.productId,
           productNum: item.productNum,
           checked: item.checked
@@ -254,7 +254,7 @@ export default {
         item.checked = flag ? "1" : "0";
       });
       axios
-        .post("http://localhost:3000/users/editCheckAll", {
+        .post("users/editCheckAll", {
           checkAll: flag
         })
         .then(response => {
@@ -271,7 +271,7 @@ export default {
     delCart() {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:3000/users/delCart", {
+        .post("users/delCart", {
           productId: this.delItem.productId
         })
         .then(result => {

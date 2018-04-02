@@ -64,7 +64,7 @@
             if(!orderId){
               return;
             }
-            axios.get("http://localhost:3000/users/orderDetail",{
+            axios.get("users/orderDetail",{
                 params:{
                   orderId:orderId
                 }

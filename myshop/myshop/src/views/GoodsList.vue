@@ -133,7 +133,7 @@ export default {
         priceLevel: this.priceLevel
       };
       axios
-        .get("http://localhost:3000/goods/list", { params: param })
+        .get("goods/list", { params: param })
         .then(result => {
           this.goodsList = result.data.result.list;
         });
@@ -155,7 +155,7 @@ export default {
     addCart(productId) {
       axios.defaults.withCredentials = true;
       axios
-        .post("http://localhost:3000/goods/addCart", {
+        .post("goods/addCart", {
           productId: productId
         })
         .then(result => {
