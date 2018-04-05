@@ -30,6 +30,24 @@ npm test
 db 文件夹是 mongodb数据
 接口: https://github.com/luoyefeiwu/learn_node/tree/master/myshop
 
+部署：
+nginx :
+                                                      
+        location / {
+          root   /usr/local/www/vueMyshop;
+          index  index.html index.htm;
+          try_files $uri $uri/ @router;
+        }
+        location @router {
+            rewrite ^.*$ /index.html last;
+        }
+
+        location ^~/goods/ {
+          #  proxy_pass   http://localhost:3000;
+        }
+        location ^~/users/ {
+           # proxy_pass   http://localhost:3000;
+        }
 
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
