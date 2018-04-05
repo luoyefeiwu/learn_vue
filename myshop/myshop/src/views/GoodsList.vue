@@ -134,7 +134,7 @@ export default {
       };
       axios
         .get("goods/list", { params: param })
-        .then(result => {
+        .then((result) => {
           this.goodsList = result.data.result.list;
         });
     },

@@ -27,4 +27,9 @@ npm run e2e
 npm test
 ```
 
+db 文件夹是 mongodb数据
+接口: https://github.com/luoyefeiwu/learn_node/tree/master/myshop
+
+
+
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
