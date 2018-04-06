@@ -2,9 +2,9 @@
     <section class="bread">
         <div class="bread-wrap">
             <nav class="">
-                <a href="/">
-                    Home
-                </a>
+              <router-link v-bind:to="{path:'/'}">
+                Home
+              </router-link>
                 <slot></slot>
             </nav>
         </div>
